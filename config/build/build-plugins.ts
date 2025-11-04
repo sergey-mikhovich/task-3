@@ -8,15 +8,13 @@ export function buildPlugins({mode, paths}: BuildOptions): Configuration['plugin
     const isDev = mode === "development";
 
     const plugins: Configuration['plugins'] = [
-        new HtmlWebpackPlugin({
-            template: paths.html
-        }),
+        new HtmlWebpackPlugin({template: paths.html}),
+        new Dotenv()
     ]
 
     if (isDev) {
         plugins.push(
             new ReactRefreshWebpackPlugin(),
-            new Dotenv()
         )
     }
 
