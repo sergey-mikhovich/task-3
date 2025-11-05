@@ -11,8 +11,10 @@ import ShoppingCart from '@mui/icons-material/ShoppingCart';
 import Pagination from "@mui/material/Pagination";
 import {useGetProductsQuery} from "@/features/products/products-api";
 import {ChangeEvent, useState} from "react";
+import {useNavigate} from "react-router-dom";
 
 export const ProductsList = () => {
+    const navigate = useNavigate();
     const [page, setPage] = useState(1);
 
     const limit = 15
@@ -25,6 +27,10 @@ export const ProductsList = () => {
     const handlePageChange = (event: ChangeEvent<unknown>, page: number) => {
         setPage(page)
         window.scroll({top: 0})
+    }
+
+    const navigateToProduct = (id: number) => {
+        navigate('/products/' + id)
     }
 
     return (
@@ -90,6 +96,7 @@ export const ProductsList = () => {
                                     fullWidth
                                     variant="contained"
                                     startIcon={<ShoppingCart />}
+                                    onClick={() => navigateToProduct(product.id)}
                                 >
                                     Подробнее
                                 </Button>

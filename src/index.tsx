@@ -1,8 +1,8 @@
 import {createRoot} from "react-dom/client";
-import {App} from "@/app/app";
 import {Provider} from "react-redux";
 import {store} from "@/app/store";
-import CssBaseline from '@mui/material/CssBaseline';
+import {RouterProvider} from "react-router-dom";
+import {router} from "@/app/router";
 
 const container = document.getElementById('root');
 
@@ -11,8 +11,7 @@ if (container) {
 
     root.render(
         <Provider store={store}>
-            <CssBaseline/>
-            <App/>
+            <RouterProvider router={router}/>
         </Provider>
     )
 } else {

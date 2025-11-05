@@ -1,6 +1,11 @@
-import {ProductsList} from "@/features/products/products-list";
-import {Product} from "@/features/products/product";
+import CssBaseline from "@mui/material/CssBaseline";
+import {Layout} from "@/shared/components/layout/layout";
 
 export const App = () => {
-    return <Product/>
+    return (
+        <>
+            <CssBaseline/>
+            <Layout/>
+        </>
+    )
 }

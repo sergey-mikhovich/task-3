@@ -16,11 +16,18 @@ import Rating from "@mui/material/Rating";
 import Chip from "@mui/material/Chip";
 import Inventory from "@mui/icons-material/Inventory";
 import LocalShipping from "@mui/icons-material/LocalShipping";
+import {useNavigate, useParams} from "react-router-dom";
 
 export const Product = () => {
+    const {id} = useParams<{id: string}>();
+    const navigate = useNavigate();
     const [selectedImage, setSelectedImage] = useState(0);
 
-    const { data: product, isLoading, error } = useGetProductByIdQuery(10);
+    const { data: product, isLoading, error } = useGetProductByIdQuery(Number(id));
+
+    const navigateBack = () => {
+        navigate(-1);
+    }
 
     if (isLoading) {
         return (
@@ -55,6 +62,7 @@ export const Product = () => {
                     underline="hover"
                     color="inherit"
                     sx={{ cursor: 'pointer' }}
+                    onClick={navigateBack}
                 >
                     Товары
                 </Link>
@@ -64,6 +72,7 @@ export const Product = () => {
             <Button
                 startIcon={<ArrowBack />}
                 sx={{ mb: 3 }}
+                onClick={navigateBack}
             >
                 Назад к каталогу
             </Button>
@@ -124,15 +133,15 @@ export const Product = () => {
                     </Box>
 
                     <Box display="flex" gap={1} mb={3}>
-                        <Chip label={product.brand} color="primary" variant="outlined" />
-                        <Chip label={product.category} />
+                        {product.brand && <Chip label={product.brand} color="primary" variant="outlined" />}
+                        {product.category && <Chip label={product.category} />}
                     </Box>
 
                     <Typography variant="body1" paragraph color="text.secondary">
                         {product.description}
                     </Typography>
 
-                    <Paper elevation={1} sx={{ p: 3, mb: 3, bgcolor: 'grey.50'}}>
+
                         <Box display="flex" alignItems="flex-end" gap={2} mb={2}>
                             <Typography variant="h3" color="primary" fontWeight="bold">
                                 ${discountedPrice.toFixed(2)}
@@ -178,7 +187,7 @@ export const Product = () => {
                         >
                             {product.stock === 0 ? 'Нет в наличии' : 'Добавить в корзину'}
                         </Button>
-                    </Paper>
+
                 </Grid>
             </Grid>
         </Container>
