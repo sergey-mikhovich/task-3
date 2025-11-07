@@ -35,11 +35,11 @@ export const ProductsList = () => {
 
     return (
         <Container sx={{ py: 4 }}>
-            <Typography variant={"h4"} component={"h1"} gutterBottom fontWeight={"bold"}>
-                Products
+            <Typography variant={"h4"} component={"h1"} fontWeight={"bold"}>
+                Product catalog
             </Typography>
 
-            <Grid container spacing={3}>
+            <Grid container spacing={3} marginTop={4}>
                 {data?.products.map((product, index) => (
                     <Grid size={{ xs: 12, sm: 6, md: 4}} key={product.id}>
                         <Card
@@ -106,15 +106,17 @@ export const ProductsList = () => {
                 ))}
             </Grid>
 
-            <Box display="flex" justifyContent="center" mt={4}>
-                <Pagination
-                    count={totalPages}
-                    page={page}
-                    onChange={handlePageChange}
-                    color="primary"
-                    size="large"
-                />
-            </Box>
+            { totalPages > 1 && (
+                <Box display="flex" justifyContent="center" mt={4}>
+                    <Pagination
+                        count={totalPages}
+                        page={page}
+                        onChange={handlePageChange}
+                        color="primary"
+                        size="large"
+                    />
+                </Box>
+            )}
         </Container>
     )
 }
