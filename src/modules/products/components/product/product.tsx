@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useGetProductByIdQuery } from "./products-api";
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
@@ -16,18 +15,16 @@ import Rating from "@mui/material/Rating";
 import Chip from "@mui/material/Chip";
 import Inventory from "@mui/icons-material/Inventory";
 import LocalShipping from "@mui/icons-material/LocalShipping";
-import {useNavigate, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
+import {useAppNavigate} from "@/core/hooks/use-app-navigate";
+import {useGetProductByIdQuery} from "@/modules/products";
 
 export const Product = () => {
     const {id} = useParams<{id: string}>();
-    const navigate = useNavigate();
+    const {back} = useAppNavigate()
     const [selectedImage, setSelectedImage] = useState(0);
 
     const { data: product, isLoading, error } = useGetProductByIdQuery(Number(id));
-
-    const navigateBack = () => {
-        navigate(-1);
-    }
 
     if (isLoading) {
         return (
@@ -62,7 +59,7 @@ export const Product = () => {
                     underline="hover"
                     color="inherit"
                     sx={{ cursor: 'pointer' }}
-                    onClick={navigateBack}
+                    onClick={back}
                 >
                     Товары
                 </Link>
@@ -72,7 +69,7 @@ export const Product = () => {
             <Button
                 startIcon={<ArrowBack />}
                 sx={{ mb: 3 }}
-                onClick={navigateBack}
+                onClick={back}
             >
                 Назад к каталогу
             </Button>

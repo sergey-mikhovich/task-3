@@ -1,5 +1,5 @@
-import {baseApi} from "@/shared/api/base-api";
-import {Product, ProductsArgs, ProductsResponse} from "@/types/product";
+import {baseApi} from "@/core/services/base-api";
+import {Product, ProductsArgs, ProductsResponse} from "@/modules/products/models/product";
 
 const productsApi = baseApi.injectEndpoints({
     endpoints: (build) => ({

@@ -1,11 +1,11 @@
-import {useMeQuery} from "@/features/auth/auth-api";
+import {useMeQuery} from "@/modules/auth/services/auth-api";
 import {Navigate, Outlet} from "react-router-dom";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
+import {routes} from "@/core/constants/routes";
 
 export const ProtectedRoute = () => {
     const {data: user, isLoading} = useMeQuery();
-    console.log(user);
 
     if (isLoading) {
         return (
@@ -15,5 +15,5 @@ export const ProtectedRoute = () => {
         );
     }
 
-    return user ? <Outlet/> : <Navigate to="auth/login" replace/>
+    return user ? <Outlet/> : <Navigate to={routes.auth.login} replace/>
 }

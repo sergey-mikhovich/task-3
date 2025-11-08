@@ -1,13 +1,11 @@
 import Box from "@mui/material/Box";
-import { Outlet } from "react-router-dom";
-import {Header} from "@/shared/components/header/header";
+import {PropsWithChildren} from "react";
 
-export const Layout = () => {
+export const Layout = ({children}: PropsWithChildren) => {
     return (
         <Box sx={{display: 'flex', flexDirection: 'column', minHeight: '100vh'}}>
             <Box component="main" sx={{flexGrow: 1, bgcolor: 'grey.50'}}>
-                <Header/>
-                <Outlet/>
+                {children}
             </Box>
         </Box>
     )

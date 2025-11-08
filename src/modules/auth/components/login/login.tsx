@@ -8,24 +8,18 @@ import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import {useState} from "react";
-import { useNavigate } from "react-router-dom";
-import {useLazyMeQuery, useLoginMutation} from "@/features/auth/auth-api";
+import {useLogin} from "@/modules/auth/hooks/use-login";
 
 export const Login = () => {
-    const navigate = useNavigate();
-    const [fetchMe] = useLazyMeQuery()
-
+    const { onLogin, isLoading, error } = useLogin()
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [login, { isLoading, error }] = useLoginMutation();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         try {
-            await login({ username, password }).unwrap();
-            await fetchMe().unwrap();
-            navigate('/products', {replace: true})
+            await onLogin({ username, password })
         } catch (err) {
             console.error('Login failed:', err);
         }

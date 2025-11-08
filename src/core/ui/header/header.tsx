@@ -6,20 +6,36 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import {useNavigate} from "react-router-dom";
-import {useMeQuery} from "@/features/auth/auth-api";
-import {baseApi} from "@/shared/api/base-api";
-import {useAppDispatch} from "@/shared/hooks/use-app-dispatch";
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import CircularProgress from "@mui/material/CircularProgress";
 
-export const Header = () => {
-    const navigate = useNavigate()
-    const dispatch = useAppDispatch()
-    const {data: user, isLoading} = useMeQuery()
+type Profile = {
+    firstName: string
+    lastName: string
+    email: string
+    username: string
+    image: string
+}
+
+export type HeaderProps = {
+    onLogout: () => void
+    onMain: () => void
+    onLogin: () => void
+    profile?: Profile
+    isLoading: boolean
+}
+
+export const Header = ({
+    onLogout,
+    onMain,
+    onLogin,
+    profile,
+    isLoading,
+}: HeaderProps) => {
+
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
     const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -30,14 +46,10 @@ export const Header = () => {
         setAnchorEl(null);
     };
 
-    const handleLogout = () => {
-        dispatch(baseApi.util.resetApiState())
+    const handleOnLogout = () => {
+        onLogout()
         handleClose()
     };
-
-    const navigateToMain = () => {
-        navigate(user ? "/products" : "/auth/login");
-    }
 
     return (
         <AppBar position="sticky" elevation={2}>
@@ -48,7 +60,7 @@ export const Header = () => {
                     color="inherit"
                     aria-label="logo"
                     sx={{ mr: 2 }}
-                    onClick={navigateToMain}
+                    onClick={onMain}
                 >
                     <StorefrontOutlined />
                 </IconButton>
@@ -57,15 +69,15 @@ export const Header = () => {
                     variant="h6"
                     component="div"
                     sx={{ flexGrow: 1, cursor: 'pointer' }}
-                    onClick={navigateToMain}
+                    onClick={onMain}
                 >
                     Shop App
                 </Typography>
 
-                { user ? (
+                { profile ? (
                     <Box display="flex" alignItems="center" gap={1}>
                         <Typography variant="body2" sx={{ display: { xs: 'none', sm: 'block' } }}>
-                            {user.firstName} {user.lastName}
+                            {profile.firstName} {profile.lastName}
                         </Typography>
                         <IconButton
                             size="large"
@@ -75,8 +87,8 @@ export const Header = () => {
                             onClick={handleMenu}
                             color="inherit"
                         >
-                            {user.image ? (
-                                <Avatar src={user.image} alt={user.username} sx={{ width: 32, height: 32 }} />
+                            {profile.image ? (
+                                <Avatar src={profile.image} alt={profile.username} sx={{ width: 32, height: 32 }} />
                             ) : (
                                 <AccountCircle />
                             )}
@@ -98,17 +110,17 @@ export const Header = () => {
                         >
                             <MenuItem disabled>
                                 <Typography variant="body2" color="text.secondary">
-                                    {user.email}
+                                    {profile.email}
                                 </Typography>
                             </MenuItem>
-                            <MenuItem onClick={handleLogout}>Log Out</MenuItem>
+                            <MenuItem onClick={handleOnLogout}>Log Out</MenuItem>
                         </Menu>
                     </Box>
                 ) : (
                     <>
                         {isLoading && <CircularProgress size={24} sx={{color: "white"}} /> }
                         {!isLoading && (
-                            <Button color="inherit" onClick={() => navigate('auth/login')}>
+                            <Button color="inherit" onClick={onLogin}>
                                 Log In
                             </Button>
                         )}

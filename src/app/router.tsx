@@ -1,20 +1,19 @@
-import {createBrowserRouter, redirect, RouteObject} from "react-router-dom";
-import {ProductsList} from "@/features/products/products-list";
-import {Product} from "@/features/products/product";
+import {createBrowserRouter, Navigate, RouteObject} from "react-router-dom";
 import {App} from "@/app/app";
-import { Login } from "@/features/auth/login";
-import {ProtectedRoute} from "@/shared/components/protected-route/protected-route";
+import {Login, ProtectedRoute} from "@/modules/auth";
+import {Product, ProductsList} from "@/modules/products";
+import {routes} from "@/core/constants/routes";
 
 const publicRoutes: RouteObject[] = [
     {
-      loader: () => redirect('products'),
-      index: true
+        index: true,
+        element: <Navigate to={routes.products.list}/>
     },
     {
-        path: "auth",
+        path: routes.auth.root,
         children: [
             {
-                path: "login",
+                path: routes.auth.login.split("/").pop(),
                 element: <Login/>,
             }
         ]
@@ -23,14 +22,14 @@ const publicRoutes: RouteObject[] = [
 
 const privateRoutes: RouteObject[] = [
     {
-        path: 'products',
+        path: routes.products.list,
         children: [
             {
                 element: <ProductsList/>,
                 index: true
             },
             {
-                path: ':id',
+                path: routes.products.detail().split("/").pop(),
                 element: <Product/>
             }
         ]
@@ -39,7 +38,7 @@ const privateRoutes: RouteObject[] = [
 
 export const router = createBrowserRouter([
     {
-        path: '/',
+        path: routes.root,
         element: <App/>,
         children: [
             {
