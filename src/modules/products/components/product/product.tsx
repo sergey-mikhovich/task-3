@@ -4,7 +4,6 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import ShoppingCart from '@mui/icons-material/ShoppingCart';
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
 import ArrowBack from "@mui/icons-material/ArrowBack";
@@ -18,17 +17,22 @@ import LocalShipping from "@mui/icons-material/LocalShipping";
 import {useParams} from "react-router-dom";
 import {useAppNavigate} from "@/core/hooks/use-app-navigate";
 import {useGetProductByIdQuery} from "@/modules/products";
+import {calculateDiscountPrice} from "@/core/utils/calculate-discount-price";
+
+type ProductParam = {
+    id: string;
+}
 
 export const Product = () => {
-    const {id} = useParams<{id: string}>();
-    const {back} = useAppNavigate()
+    const {id} = useParams<ProductParam>();
+    const {back, toProductsList} = useAppNavigate()
     const [selectedImage, setSelectedImage] = useState(0);
 
     const { data: product, isLoading, error } = useGetProductByIdQuery(Number(id));
 
     if (isLoading) {
         return (
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
+            <Box display="flex" justifyContent="center" alignItems="center" height="100%">
                 <CircularProgress size={60} />
             </Box>
         );
@@ -38,19 +42,20 @@ export const Product = () => {
         return (
             <Container sx={{ mt: 4 }}>
                 <Alert severity="error">
-                    Не удалось загрузить информацию о товаре
+                    Failed to load product information
                 </Alert>
                 <Button
                     startIcon={<ArrowBack />}
                     sx={{ mt: 2 }}
+                    onClick={() => toProductsList()}
                 >
-                    Вернуться к каталогу
+                    Back to catalog
                 </Button>
             </Container>
         );
     }
 
-    const discountedPrice = product.price * (1 - product.discountPercentage / 100);
+    const discountedPrice = calculateDiscountPrice(product.price, product.discountPercentage, 2)
 
     return (
         <Container sx={{ py: 4 }}>
@@ -61,7 +66,7 @@ export const Product = () => {
                     sx={{ cursor: 'pointer' }}
                     onClick={back}
                 >
-                    Товары
+                    Catalog
                 </Link>
                 <Typography color="text.primary">{product.title}</Typography>
             </Breadcrumbs>
@@ -71,7 +76,7 @@ export const Product = () => {
                 sx={{ mb: 3 }}
                 onClick={back}
             >
-                Назад к каталогу
+                Back to catalog
             </Button>
 
             <Grid container spacing={4}>
@@ -134,57 +139,46 @@ export const Product = () => {
                         {product.category && <Chip label={product.category} />}
                     </Box>
 
-                    <Typography variant="body1" paragraph color="text.secondary">
+                    <Typography variant="body1" color="text.secondary">
                         {product.description}
                     </Typography>
 
 
-                        <Box display="flex" alignItems="flex-end" gap={2} mb={2}>
-                            <Typography variant="h3" color="primary" fontWeight="bold">
-                                ${discountedPrice.toFixed(2)}
-                            </Typography>
-                            {product.discountPercentage > 0 && (
-                                <>
-                                    <Typography
-                                        variant="h6"
-                                        color="text.secondary"
-                                        sx={{ textDecoration: 'line-through' }}
-                                    >
-                                        ${product.price}
-                                    </Typography>
-                                    <Chip
-                                        label={`-${product.discountPercentage.toFixed(0)}%`}
-                                        color="error"
-                                        size="small"
-                                    />
-                                </>
-                            )}
-                        </Box>
-
-                        <Box display="flex" gap={2} mb={2}>
-                            <Box display="flex" alignItems="center" gap={1}>
-                                <Inventory fontSize="small" color="action" />
-                                <Typography variant="body2">
-                                    In stock: {product.stock} шт
+                    <Box display="flex" alignItems="flex-end" flexWrap="wrap-reverse" gap={2} mb={2} mt={4}>
+                        <Typography variant="h3" component={"h2"} color="primary" fontWeight="bold">
+                            ${discountedPrice}
+                        </Typography>
+                        {product.discountPercentage > 0 && (
+                            <Box display="flex" flexDirection={"column-reverse"} alignItems={"start"}>
+                                <Typography
+                                    variant="h6"
+                                    component={"h3"}
+                                    color="text.secondary"
+                                    sx={{ textDecoration: 'line-through' }}
+                                >
+                                    ${product.price}
                                 </Typography>
+                                <Chip
+                                    label={`-${product.discountPercentage.toFixed(0)}%`}
+                                    color="error"
+                                    size="small"
+                                />
                             </Box>
-                            <Box display="flex" alignItems="center" gap={1}>
-                                <LocalShipping fontSize="small" color="action" />
-                                <Typography variant="body2">Free delivery</Typography>
-                            </Box>
+                        )}
+                    </Box>
+
+                    <Box display="flex" gap={2} mb={2}>
+                        <Box display="flex" alignItems="center" gap={1}>
+                            <Inventory fontSize="small" color="action" />
+                            <Typography variant="body2">
+                                In stock: {product.stock}
+                            </Typography>
                         </Box>
-
-                        <Button
-                            fullWidth
-                            variant="contained"
-                            size="large"
-                            startIcon={<ShoppingCart />}
-                            disabled={product.stock === 0}
-                            sx={{ py: 1.5 }}
-                        >
-                            {product.stock === 0 ? 'Нет в наличии' : 'Добавить в корзину'}
-                        </Button>
-
+                        <Box display="flex" alignItems="center" gap={1}>
+                            <LocalShipping fontSize="small" color="action" />
+                            <Typography variant="body2">Free delivery</Typography>
+                        </Box>
+                    </Box>
                 </Grid>
             </Grid>
         </Container>
