@@ -1,15 +1,15 @@
-import {useMeQuery} from "@/modules/auth/services/auth-api";
 import {Navigate, Outlet} from "react-router-dom";
-import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
 import {routes} from "@/core/constants/routes";
+import {useMeQuery} from "@/modules/auth";
 
 export const ProtectedRoute = () => {
     const {data: user, isLoading} = useMeQuery();
 
     if (isLoading) {
         return (
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
+            <Box display="flex" justifyContent="center" alignItems="center" height="100%">
                 <CircularProgress size={60} />
             </Box>
         );

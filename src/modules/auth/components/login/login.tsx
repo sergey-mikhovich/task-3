@@ -7,33 +7,37 @@ import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import {useState} from "react";
-import {useLogin} from "@/modules/auth/hooks/use-login";
+import React, {useState} from "react";
+import {useLoginMutation} from "@/modules/auth";
+import {useAppNavigate} from "@/core/hooks/use-app-navigate";
 
 export const Login = () => {
-    const { onLogin, isLoading, error } = useLogin()
+    const [login, {isLoading, error}] = useLoginMutation();
+    const {toProductsList} = useAppNavigate();
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         try {
-            await onLogin({ username, password })
+            await login({ username, password }).unwrap()
+            toProductsList({replace: true});
         } catch (err) {
             console.error('Login failed:', err);
         }
     };
 
     return (
-        <Container component="main" maxWidth="xs">
+        <Container maxWidth="xs" sx={{height: "100%", py: {xs: 2, sm: 3}}}>
             <Box
                 sx={{
-                    minHeight: '100vh',
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'center',
                     alignItems: 'center',
+                    height: "100%"
                 }}
             >
                 <Paper
@@ -63,7 +67,7 @@ export const Login = () => {
                     </Typography>
 
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 3, textAlign: 'center' }}>
-                        Use: emilys / emilyspass
+                        emilys / emilyspass
                     </Typography>
 
                     {error && (
@@ -108,7 +112,7 @@ export const Login = () => {
                             sx={{ mt: 3, mb: 2, py: 1.5 }}
                             disabled={isLoading}
                         >
-                            {isLoading ? <CircularProgress size={24} /> : 'Войти'}
+                            {isLoading ? <CircularProgress size={24} /> : "Log in"}
                         </Button>
                     </Box>
                 </Paper>
