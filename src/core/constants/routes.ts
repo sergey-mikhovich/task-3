@@ -8,4 +8,5 @@ export const routes = {
         list: '/products',
         detail: (id: string = ':id') => `/products/${id}` as const,
     },
+    unknown: '*'
 } as const;

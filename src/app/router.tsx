@@ -1,14 +1,11 @@
 import {createBrowserRouter, Navigate, RouteObject} from "react-router-dom";
 import {App} from "@/app/app";
+import {routes} from "@/core/constants/routes";
+import {NotFound} from "@/core/ui/not-found/not-found";
 import {Login, ProtectedRoute} from "@/modules/auth";
 import {Product, ProductsList} from "@/modules/products";
-import {routes} from "@/core/constants/routes";
 
 const publicRoutes: RouteObject[] = [
-    {
-        index: true,
-        element: <Navigate to={routes.products.list}/>
-    },
     {
         path: routes.auth.root,
         children: [
@@ -17,10 +14,18 @@ const publicRoutes: RouteObject[] = [
                 element: <Login/>,
             }
         ]
+    },
+    {
+        path: routes.unknown,
+        element: <NotFound/>
     }
 ]
 
 const privateRoutes: RouteObject[] = [
+    {
+        index: true,
+        element: <Navigate to={routes.products.list} replace/>
+    },
     {
         path: routes.products.list,
         children: [
