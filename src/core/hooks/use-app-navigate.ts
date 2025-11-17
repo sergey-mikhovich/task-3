@@ -1,13 +1,25 @@
 import {NavigateOptions, useNavigate} from "react-router-dom";
 import {routes} from "@/core/constants/routes";
+import {useCallback} from "react";
 
 export const useAppNavigate = () => {
     const navigate = useNavigate()
 
-    return {
-        back: () => navigate(-1),
-        toLogin: (options?: NavigateOptions) => navigate(routes.auth.login, options),
-        toProductsList: (options?: NavigateOptions) => navigate(routes.products.list, options),
-        toProductDetail: (id: string, options?: NavigateOptions) => navigate(routes.products.detail(id), options),
-    }
+    const back = useCallback(() => {
+        navigate(-1)
+    }, [navigate])
+
+    const toLogin = useCallback((options?: NavigateOptions) => {
+        navigate(routes.auth.login, options)
+    }, [navigate])
+
+    const toProductsList = useCallback((options?: NavigateOptions) => {
+        navigate(routes.products.list, options)
+    }, [navigate])
+
+    const toProductDetail = useCallback((id: string, options?: NavigateOptions) => {
+        navigate(routes.products.detail(id), options)
+    }, [navigate])
+
+    return {back, toLogin, toProductsList, toProductDetail}
 }

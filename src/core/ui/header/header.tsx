@@ -28,14 +28,7 @@ export type HeaderProps = {
     isLoading: boolean
 }
 
-export const Header = ({
-    onLogout,
-    onMain,
-    onLogin,
-    profile,
-    isLoading,
-}: HeaderProps) => {
-
+export const Header = ({onLogout, onMain, onLogin, profile, isLoading}: HeaderProps) => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
     const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -52,27 +45,28 @@ export const Header = ({
     };
 
     return (
-        <AppBar position="sticky" elevation={2}>
+        <AppBar elevation={2}>
             <Toolbar>
-                <IconButton
-                    size="large"
-                    edge="start"
-                    color="inherit"
-                    aria-label="logo"
-                    sx={{ mr: 2 }}
-                    onClick={onMain}
-                >
-                    <StorefrontOutlined />
-                </IconButton>
+                <Box display={"flex"} alignItems={"center"} flex={1}>
+                    <IconButton
+                        size="large"
+                        edge="start"
+                        color="inherit"
+                        aria-label="Logo"
+                        sx={{ mr: 2 }}
+                        onClick={onMain}
+                    >
+                        <StorefrontOutlined />
+                    </IconButton>
 
-                <Typography
-                    variant="h6"
-                    component="div"
-                    sx={{ flexGrow: 1, cursor: 'pointer' }}
-                    onClick={onMain}
-                >
-                    Shop App
-                </Typography>
+                    <Typography
+                        variant="h6"
+                        component="h2"
+                        sx={{ cursor: 'pointer' }}
+                    >
+                        Shop App
+                    </Typography>
+                </Box>
 
                 { profile ? (
                     <Box display="flex" alignItems="center" gap={1}>
@@ -81,14 +75,15 @@ export const Header = ({
                         </Typography>
                         <IconButton
                             size="large"
-                            aria-label="account menu"
+                            aria-label="Account menu"
                             aria-controls="menu-appbar"
                             aria-haspopup="true"
                             onClick={handleMenu}
                             color="inherit"
+                            sx={{ mr: -1.5 }}
                         >
                             {profile.image ? (
-                                <Avatar src={profile.image} alt={profile.username} sx={{ width: 32, height: 32 }} />
+                                <Avatar src={profile.image} alt={profile.username} sx={{ width: 32, height: 32}}/>
                             ) : (
                                 <AccountCircle />
                             )}
@@ -113,17 +108,15 @@ export const Header = ({
                                     {profile.email}
                                 </Typography>
                             </MenuItem>
-                            <MenuItem onClick={handleOnLogout}>Log Out</MenuItem>
+                            <MenuItem onClick={handleOnLogout}>Log out</MenuItem>
                         </Menu>
                     </Box>
                 ) : (
                     <>
-                        {isLoading && <CircularProgress size={24} sx={{color: "white"}} /> }
-                        {!isLoading && (
-                            <Button color="inherit" onClick={onLogin}>
-                                Log In
-                            </Button>
-                        )}
+                        { isLoading
+                            ? <CircularProgress size={24} sx={{color: "inherit", marginRight: 0.5}} />
+                            : <Button color="inherit" sx={{mr: -1}} onClick={onLogin}>Log In</Button>
+                        }
                     </>
                 )}
             </Toolbar>

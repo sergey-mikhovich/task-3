@@ -1,43 +1,49 @@
 import CssBaseline from "@mui/material/CssBaseline";
-import {Outlet} from "react-router-dom";
+import {Outlet, ScrollRestoration} from "react-router-dom";
 import {useLogout, useMeQuery} from "@/modules/auth";
 import {Header, HeaderProps} from "@/core/ui/header/header";
-import {Layout} from "@/core/ui/layout/layout";
 import {useAppNavigate} from "@/core/hooks/use-app-navigate";
+import Box from "@mui/material/Box";
+import {useCallback, useMemo} from "react";
 
 export const App = () => {
     const {toLogin, toProductsList} = useAppNavigate()
     const {onLogout} = useLogout()
     const {data: user, isLoading} = useMeQuery()
 
-    const onMain = () => {
+    const onMain = useCallback(() => {
         if (user) {
             toProductsList()
         } else {
             toLogin()
         }
-    }
+    }, [user])
 
-    const profile: HeaderProps['profile'] = user ? {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        username: user.username,
-        email: user.email,
-        image: user.image
-    } : undefined
+    const profile: HeaderProps['profile'] = useMemo(() => {
+        return user ? {
+            firstName: user.firstName,
+            lastName: user.lastName,
+            username: user.username,
+            email: user.email,
+            image: user.image
+        } : undefined
+    }, [user])
 
     return (
         <>
             <CssBaseline/>
-            <Layout>
+            <ScrollRestoration/>
+            <Box sx={{minHeight: "100dvh", display: "flex"}}>
                 <Header
                     onLogout={onLogout}
                     onMain={onMain}
                     onLogin={toLogin}
                     profile={profile}
                     isLoading={isLoading}/>
-                <Outlet/>
-            </Layout>
+                <Box component={"main"} sx={{pt: {xs: 7, sm: 8}, flex: 1}}>
+                    <Outlet/>
+                </Box>
+            </Box>
         </>
     )
 }
