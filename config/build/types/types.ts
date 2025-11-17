@@ -11,5 +11,6 @@ export interface BuildPaths {
 export interface BuildOptions {
     port: number
     paths: BuildPaths
-    mode: Configuration['mode']
+    mode: Configuration['mode'],
+    analyzer?: boolean
 }
