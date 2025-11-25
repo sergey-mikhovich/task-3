@@ -1,12 +1,14 @@
 import {useAppDispatch} from "@/core/hooks/use-app-dispatch";
 import {baseApi} from "@/core/services/base-api";
 import {useCallback} from "react";
+import {StorageService} from "@/core/utils/storage-service";
+import {TOKENS} from "@/core/constants/local-storage";
 
 export const useLogout = () => {
     const dispatch = useAppDispatch()
 
     const onLogout = useCallback(() => {
-        localStorage.removeItem("accessToken")
+        StorageService.remove(TOKENS)
         dispatch(baseApi.util.resetApiState())
     }, [dispatch]);
 

@@ -3,6 +3,7 @@ export const routes = {
     auth: {
         root: '/auth',
         login: "/auth/login",
+        refresh: "/auth/refresh",
     },
     products: {
         list: '/products',

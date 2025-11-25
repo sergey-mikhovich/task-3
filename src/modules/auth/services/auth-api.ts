@@ -1,5 +1,8 @@
 import {baseApi} from "@/core/services/base-api";
 import {LoginArgs, LoginResponse, User} from "@/modules/auth/models/auth";
+import {StorageService} from "@/core/utils/storage-service";
+import {TOKENS} from "@/core/constants/local-storage";
+import {Tokens} from "@/core/models/tokens";
 
 const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -14,8 +17,9 @@ const authApi = baseApi.injectEndpoints({
             }),
             async onQueryStarted(_, {dispatch, queryFulfilled}) {
                 try {
-                    const { data } = await queryFulfilled
-                    localStorage.setItem("accessToken", data.accessToken);
+                    const { data: {accessToken, refreshToken} } = await queryFulfilled
+                    const tokens = { accessToken, refreshToken } satisfies Tokens
+                    StorageService.set<Tokens>(TOKENS, tokens)
                     dispatch(baseApi.util.invalidateTags(['Me']));
                 } catch (e) {
                     console.error("Login failed: ", e)
@@ -25,15 +29,7 @@ const authApi = baseApi.injectEndpoints({
         me: builder.query<User, void>({
             query: () => ({
                 url: 'auth/me',
-                method: "GET",
-                headers: (() => {
-                    const headers = new Headers()
-                    const accessToken = localStorage.getItem("accessToken")
-                    if (accessToken) {
-                        headers.set('Authorization', `Bearer ${accessToken}`);
-                    }
-                    return headers
-                })()
+                method: "GET"
             }),
             providesTags: ["Me"]
         })
