@@ -8,38 +8,74 @@ import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import React, {useState} from "react";
-import {useLoginMutation} from "@/modules/auth";
+import Snackbar from "@mui/material/Snackbar";
+import {delay} from "@/core/utils/delay";
 import {useAppNavigate} from "@/core/hooks/use-app-navigate";
 import {LocalUsersStorage} from "@/modules/auth/store/local-users-storage";
+import {LocalUser} from "@/modules/auth/models/local-user";
 
-export const Login = () => {
-    const [login, {isLoading, error}] = useLoginMutation();
-    const {toProductsList, toRegister} = useAppNavigate();
+export const Register = () => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState<string | null>(null);
+
+    const {toLogin} = useAppNavigate();
 
     const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [passwordConfirmation, setPasswordConfirmation] = useState('');
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        let currentUsername = username;
-        let currentPassword = password;
-
         try {
-            const user = LocalUsersStorage.getUser(username)
-            if (user && user.password === password) {
-                currentUsername = "emilys";
-                currentPassword = "emilyspass";
+            setError(null)
+            if (password !== passwordConfirmation) {
+                setError("The passwords do not match")
+                return
             }
-            await login({ username: currentUsername, password: currentPassword }).unwrap()
-            toProductsList({replace: true});
+
+            setIsLoading(true);
+            await delay(1000)
+
+            const localUser = {username, email, password} satisfies LocalUser
+            const saved = LocalUsersStorage.saveUser(localUser);
+
+            if (!saved) {
+                setError("This username is already taken");
+            } else {
+                setSuccess("You have signed up successfully")
+                await delay(1000)
+                toLogin()
+            }
         } catch (err) {
-            console.error('Login failed:', err);
+            console.error('Sign up failed:', err);
+        } finally {
+            setIsLoading(false)
         }
+    };
+
+    const handleClose = () => {
+        setSuccess(null);
     };
 
     return (
         <Container maxWidth="xs" sx={{height: "100%", py: {xs: 2, sm: 3}}}>
+            <Snackbar
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                open={success !== null}
+                onClose={handleClose}
+                autoHideDuration={1000}
+            >
+                <Alert
+                    severity={"success"}
+                    variant="filled"
+                    sx={{width: '100%'}}
+                >
+                    {success}
+                </Alert>
+            </Snackbar>
             <Box
                 sx={{
                     display: 'flex',
@@ -72,12 +108,12 @@ export const Login = () => {
                     </Box>
 
                     <Typography component="h1" variant="h5" gutterBottom>
-                        Sign In
+                        Sign Up
                     </Typography>
 
                     {error && (
                         <Alert severity="error" sx={{ width: '100%', mb: 2 }}>
-                            Incorrect username or password
+                            {error}
                         </Alert>
                     )}
 
@@ -100,6 +136,19 @@ export const Login = () => {
                             margin="normal"
                             required
                             fullWidth
+                            id="email"
+                            label="Email"
+                            name="email"
+                            autoComplete="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            disabled={isLoading}
+                        />
+
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
                             name="password"
                             label="Password"
                             type="password"
@@ -110,6 +159,20 @@ export const Login = () => {
                             disabled={isLoading}
                         />
 
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="passwordConfirmation"
+                            label="Password confirmation"
+                            type="password"
+                            id="password"
+                            autoComplete="current-password"
+                            value={passwordConfirmation}
+                            onChange={(e) => setPasswordConfirmation(e.target.value)}
+                            disabled={isLoading}
+                        />
+
                         <Button
                             type="submit"
                             fullWidth
@@ -117,11 +180,11 @@ export const Login = () => {
                             sx={{ mt: 3, py: 1.5 }}
                             disabled={isLoading}
                         >
-                            {isLoading ? <CircularProgress size={24} /> : "Sign In"}
+                            {isLoading ? <CircularProgress size={24} /> : "Sign Up"}
                         </Button>
 
                         <Typography variant="body2" color="text.secondary" sx={{ mt: 3, textAlign: 'center' }}>
-                            Don't have an account?
+                            Do you have an account?
                         </Typography>
 
                         <Button
@@ -129,9 +192,9 @@ export const Login = () => {
                             variant="outlined"
                             sx={{ mt: 3, mb: 2, py: 1.5 }}
                             disabled={isLoading}
-                            onClick={() => toRegister()}
+                            onClick={() => toLogin()}
                         >
-                            Sign Up
+                            Sign In
                         </Button>
                     </Box>
                 </Paper>

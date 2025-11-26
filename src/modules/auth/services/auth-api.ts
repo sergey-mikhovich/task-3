@@ -1,6 +1,6 @@
 import {baseApi} from "@/core/services/base-api";
 import {LoginArgs, LoginResponse, User} from "@/modules/auth/models/auth";
-import {StorageService} from "@/core/utils/storage-service";
+import {StorageService} from "@/core/stores/storage-service";
 import {TOKENS} from "@/core/constants/local-storage";
 import {Tokens} from "@/core/models/tokens";
 

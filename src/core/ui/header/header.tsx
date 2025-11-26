@@ -115,7 +115,7 @@ export const Header = ({onLogout, onMain, onLogin, profile, isLoading}: HeaderPr
                     <>
                         { isLoading
                             ? <CircularProgress size={24} sx={{color: "inherit", marginRight: 0.5}} />
-                            : <Button color="inherit" sx={{mr: -1}} onClick={onLogin}>Log In</Button>
+                            : <Button color="inherit" sx={{mr: -1}} onClick={onLogin}>Sign In</Button>
                         }
                     </>
                 )}

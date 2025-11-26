@@ -2,7 +2,7 @@ import {createBrowserRouter, Navigate, RouteObject} from "react-router-dom";
 import {App} from "@/app/app";
 import {routes} from "@/core/constants/routes";
 import {NotFound} from "@/core/ui/not-found/not-found";
-import {Login, ProtectedRoute} from "@/modules/auth";
+import {Login, Register, ProtectedRoute} from "@/modules/auth";
 import {Product, ProductsList} from "@/modules/products";
 
 const publicRoutes: RouteObject[] = [
@@ -12,6 +12,10 @@ const publicRoutes: RouteObject[] = [
             {
                 path: routes.auth.login.split("/").pop(),
                 element: <Login/>,
+            },
+            {
+                path: routes.auth.register.split("/").pop(),
+                element: <Register/>
             }
         ]
     },

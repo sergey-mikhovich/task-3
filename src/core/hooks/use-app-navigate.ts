@@ -13,6 +13,10 @@ export const useAppNavigate = () => {
         navigate(routes.auth.login, options)
     }, [navigate])
 
+    const toRegister = useCallback((options?: NavigateOptions) => {
+        navigate(routes.auth.register, options)
+    }, [navigate])
+
     const toProductsList = useCallback((options?: NavigateOptions) => {
         navigate(routes.products.list, options)
     }, [navigate])
@@ -21,5 +25,5 @@ export const useAppNavigate = () => {
         navigate(routes.products.detail(id), options)
     }, [navigate])
 
-    return {back, toLogin, toProductsList, toProductDetail}
+    return {back, toLogin, toRegister, toProductsList, toProductDetail}
 }

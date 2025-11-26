@@ -1,7 +1,7 @@
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import {routes} from "@/core/constants/routes";
 import {Mutex} from "async-mutex";
-import {StorageService} from "@/core/utils/storage-service";
+import {StorageService} from "@/core/stores/storage-service";
 import {TOKENS} from "@/core/constants/local-storage";
 import {Tokens} from "@/core/models/tokens";
 

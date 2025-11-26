@@ -1,7 +1,7 @@
 import {useAppDispatch} from "@/core/hooks/use-app-dispatch";
 import {baseApi} from "@/core/services/base-api";
 import {useCallback} from "react";
-import {StorageService} from "@/core/utils/storage-service";
+import {StorageService} from "@/core/stores/storage-service";
 import {TOKENS} from "@/core/constants/local-storage";
 
 export const useLogout = () => {
